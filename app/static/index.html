@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syntaxtree - 句法树生成器</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="nav">
+    <nav class="nav-links">
+      <a href="#" class="active">Syntaxtree</a>
+      <a href="#">Document</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <main class="workspace">
+    <div id="split-container">
+      <div id="panel-editor" class="panel panel-editor">
+        <div class="panel-header">代码输入区</div>
+        <textarea id="code-input" placeholder="输入括号表达式，例如：[S [NP [NN dog]] [VP [VB runs]]]" spellcheck="false">[S
+  [PP
+    [IN [In]]
+    [NP [NN [general]]]
+  ]
+  [, [,]]
+  [SBAR
+    [WHADVP [WRB [when]]]
+    [S
+      [NP [JJ [other]] [NNS [factors]]]
+      [VP [VBP [are]] [ADJP [JJ [comparable]]]]
+    ]
+  ]
+  [, [,]]
+  [S
+    [S
+      [ADJP [DT [the]] [JJR [stronger]]]
+      [NP
+        [NP [DT [the]] [NNS [attractions]]]
+        [PP [IN [between]]
+          [NP
+            [NML [NN [solute]] [CC [and]] [NN [solvent]]]
+            [NNS [molecules]]
+          ]
+        ]
+      ]
+    ]
+    [, [,]]
+    [S
+      [ADJP [DT [the]] [JJR [greater]]]
+      [NP
+        [NP [DT [the]] [NN [solubility]]]
+        [PP [IN [of]]
+          [NP [DT [the]] [NN [solute]]]
+        ]
+        [PP [IN [in]]
+          [NP [DT [that]] [NN [solvent]]]
+        ]
+      ]
+    ]
+  ]
+  [. [.]]
+]</textarea>
+      </div>
+      <div id="panel-preview" class="panel panel-preview">
+        <div class="panel-header">SVG 展示区</div>
+        <div id="svg-output" class="svg-container">
+          <p class="placeholder">点击「生成 SVG」查看结果</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="control-panel">
+    <button id="btn-generate" class="btn btn-primary">生成 SVG</button>
+    <button id="btn-copy-svg" class="btn" title="复制 SVG 源码到剪贴板">复制 SVG</button>
+    <button id="btn-open-new-tab" class="btn" title="在新标签页中打开 SVG（可选中文本）">新标签页打开 SVG</button>
+    <span id="status" class="status"></span>
+  </div>
+
+  <!-- 灯箱：点击 SVG 打开，拖拽平移、滚轮缩放，仅通过 × 关闭 -->
+  <div id="lightbox" class="lightbox" hidden>
+    <button type="button" class="lightbox-close" aria-label="关闭">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+    <div class="lightbox-pan-zoom">
+      <div class="lightbox-svg-wrapper"></div>
+    </div>
+  </div>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>

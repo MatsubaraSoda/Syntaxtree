@@ -1,0 +1,107 @@
+句法树生成器 - Docker 指令速查表 (Cheat Sheet)
+
+1. 构建镜像 (Build)
+
+当修改了 Dockerfile 或 requirements.txt 后，需要重新构建镜像。
+
+-t syntaxtree-app：给构建出来的镜像打上标签（命名为 syntaxtree-app）。
+
+.：表示使用当前目录下的 Dockerfile。
+
+docker build -t syntaxtree-app .
+
+2. 运行容器 (Run - 开发模式)
+
+第一次基于镜像创建并运行容器时使用。这里包含了代码目录挂载，以便触发 FastAPI 的热重载。
+
+--name syntaxtree：给这个容器实例命名为 syntaxtree。
+
+-p 8000:8000：将本机的 8000 端口映射到容器的 8000 端口。
+
+-v ...：将本地的 app 目录挂载到容器内，实现代码同步更新。
+
+根据你的操作系统，选择以下其中一条执行：
+
+【Mac / Linux 终端】
+
+docker run -it --name syntaxtree -p 8000:8000 -v $(pwd)/app:/app/app syntaxtree-app
+
+【Windows PowerShell】
+
+docker run -it --name syntaxtree -p 8000:8000 -v ${PWD}/app:/app/app syntaxtree-app
+
+【Windows CMD】
+
+docker run -it --name syntaxtree -p 8000:8000 -v "%cd%\app":/app/app syntaxtree-app
+
+3. 日常启停 (Start / Stop)
+
+因为我们在上面使用了 --name syntaxtree 给容器起了固定的名字，以后就不需要每次都输入长长的一串 docker run 命令了。你可以直接通过名字来控制它：
+
+暂停运行中的容器：
+
+docker stop syntaxtree
+
+重新启动已停止的容器（会在后台默默启动并继续挂载你的代码）：
+
+docker start syntaxtree
+
+查看容器实时的输出日志（比如看报错信息或 FastAPI 的请求记录）：
+
+docker logs -f syntaxtree
+
+4. 清理与删除 (Remove)
+
+如果容器状态出现问题，或者你想彻底重新 run 一个全新的实例：
+
+删除这个名为 syntaxtree 的容器实例（需要先 stop）：
+
+docker rm syntaxtree
+
+强制删除正在运行的容器（强制停止并删除）：
+
+docker rm -f syntaxtree
+
+删除名为 syntaxtree-app 的镜像（需要先删除使用它的所有容器）：
+
+docker rmi syntaxtree-app
+
+---------------------------------------
+---------------------------------------
+
+镜像建造
+
+```
+docker build -t syntaxtree-app .
+```
+
+容器创建
+
+```
+docker run -it --name syntaxtree -p 8000:8000 -v ${PWD}/app:/app/app syntaxtree-app
+```
+
+容器启动
+
+```
+docker start -a syntaxtree
+```
+
+```
+docker start syntaxtree
+docker logs -f syntaxtree
+```
+
+5. LaTeX 流程验证 (验证容器内 LaTeX → XDV → SVG 是否可用)
+
+进入 templates 目录，用 xelatex 生成 XDV：
+
+```
+docker exec syntaxtree bash -c "cd /app/app/templates && xelatex -no-pdf sample.tex"
+```
+
+用 dvisvgm 将 .xdv 转为 .svg：
+
+```
+docker exec syntaxtree bash -c "cd /app/app/templates && dvisvgm --font-format=woff2 --exact --bbox=min sample.xdv -o sample.svg"
+```

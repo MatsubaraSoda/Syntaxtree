@@ -1,0 +1,63 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{forest}
+
+\begin{document}
+
+% 使用 forest 宏包绘制 PTB 句法树
+\begin{forest}
+  for tree={
+    font=\sffamily, % 使用无衬线字体，显得更现代
+    line width=0.6pt, % 树枝线条粗细
+    s sep=3mm,      % 兄弟节点之间的水平间距
+    l sep=5mm,      % 父子节点之间的垂直间距
+    inner sep=1mm,
+    align=center,
+    % 让最底层的单词(叶子节点)使用粗体或不同颜色以示区分
+    where n children=0{font=\sffamily\bfseries}{},
+  }
+[S
+  [PP 
+    [IN [In]] 
+    [NP [NN [general]]]
+  ]
+  [, [,]]
+  [SBAR
+    [WHADVP [WRB [when]]]
+    [S
+      [NP [JJ [other]] [NNS [factors]]]
+      [VP [VBP [are]] [ADJP [JJ [comparable]]]]
+    ]
+  ]
+  [, [,]]
+  [S
+    [S
+      [ADJP [DT [the]] [JJR [stronger]]]
+      [NP
+        [NP [DT [the]] [NNS [attractions]]]
+        [PP [IN [between]]
+          [NP
+            [NML [NN [solute]] [CC [and]] [NN [solvent]]]
+            [NNS [molecules]]
+          ]
+        ]
+      ]
+    ]
+    [, [,]]
+    [S
+      [ADJP [DT [the]] [JJR [greater]]]
+      [NP
+        [NP [DT [the]] [NN [solubility]]]
+        [PP [IN [of]]
+          [NP [DT [the]] [NN [solute]]]
+        ]
+        [PP [IN [in]]
+          [NP [DT [that]] [NN [solvent]]]
+        ]
+      ]
+    ]
+  ]
+  [. [.]]
+]
+\end{forest}
+
+\end{document}

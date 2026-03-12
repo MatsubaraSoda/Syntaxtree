@@ -1,0 +1,303 @@
+/* ========== 基础与变量（大自然绿色 #04AA6D，白色为主）========== */
+:root {
+  --nav-bg: #04AA6D;
+  --nav-text: #fff;
+  --nav-hover: #039660;
+  --bar-padding-x: 1.5rem;  /* 导航、控制面板左右留白 */
+  --panel-bg: #ffffff;
+  --panel-header-bg: #e8f7f0;
+  --panel-border: #d0d0d0;  /* 浅灰边框 */
+  --editor-bg: #ffffff;
+  --editor-text: #2d3748;
+  --editor-border: #e2e8f0;
+  --gutter-bg: #f1f1f1;
+  --gutter-hover: #e0e0e0;
+  --btn-primary-bg: #04AA6D;
+  --btn-primary-hover: #039660;
+  --btn-bg: #ffffff;
+  --btn-hover: #e8f7f0;
+  --placeholder: #94a3b8;
+  --success: #04AA6D;
+  --error: #b91c1c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--panel-bg);
+  color: var(--editor-text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ========== 导航栏 ========== */
+.nav {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--bar-padding-x);
+  height: 48px;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: var(--editor-text);
+  text-decoration: none;
+  font-size: 1.05rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.nav-links a:hover {
+  color: var(--btn-primary-bg);
+}
+
+.nav-links a.active {
+  color: var(--btn-primary-bg);
+  font-weight: 600;
+}
+
+/* ========== 工作区 ========== */
+.workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 4px solid #f1f1f1;
+  border-right: 4px solid #f1f1f1;
+  border-bottom: 4px solid #f1f1f1;
+}
+
+#split-container {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ========== 面板（各占 50%）========== */
+.panel {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.panel-editor {
+  border-right: 6px solid #f1f1f1;
+}
+
+.panel-header {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--placeholder);
+  background: #f1f1f1;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 1;
+}
+
+.panel-editor textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 200px;
+  padding: 1rem;
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: var(--editor-bg);
+  color: var(--editor-text);
+  border: none;
+  resize: none;
+  outline: none;
+}
+
+.panel-editor textarea::placeholder {
+  color: var(--placeholder);
+}
+
+.svg-container {
+  flex: 1;
+  min-width: 0;
+  padding: 1rem;
+  background: #fff;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+}
+
+.svg-container .placeholder {
+  color: var(--placeholder);
+  font-size: 0.9rem;
+}
+
+.svg-container .svg-preview {
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.svg-container .svg-preview svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ========== 控制面板 ========== */
+.control-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 48px;
+  padding: 0 var(--bar-padding-x);
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.control-panel .status {
+  margin-left: auto;
+}
+
+.btn {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--editor-border);
+  border-radius: 6px;
+  background: var(--btn-bg);
+  color: var(--editor-text);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--btn-hover);
+}
+
+.btn-primary {
+  background: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--btn-primary-hover);
+}
+
+.status {
+  font-size: 0.75rem;
+  color: var(--placeholder);
+}
+
+.status.success {
+  color: var(--success);
+}
+
+.status.error {
+  color: var(--error);
+}
+
+/* ========== 灯箱 ========== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox[hidden] {
+  display: none !important;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;  /* 始终在图片上方 */
+  transition: background 0.2s;
+  pointer-events: auto;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-pan-zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 1001;  /* 低于关闭按钮，确保 × 始终可见 */
+  overflow: hidden;
+  cursor: default;
+  user-select: text;
+}
+
+.lightbox-pan-zoom.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.lightbox-svg-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50% 50%;
+  display: inline-block;
+}
+
+/* 与 SVG 同宽高的白色背景 */
+.lightbox-svg-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: -1;
+}
+
+.lightbox-svg-content {
+  position: relative;
+  z-index: 1;
+  user-select: text;
+}
+
+.lightbox-svg-wrapper svg {
+  display: block;
+  max-width: 90vw;
+  max-height: 90vh;
+}

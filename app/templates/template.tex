@@ -1,0 +1,21 @@
+\documentclass[tikz,border=10pt,dvisvgm]{standalone}
+\usepackage{forest}
+\usepackage{xcolor}
+\definecolor{syntaxtreegreen}{HTML}{04AA6D}
+
+\begin{document}
+
+\begin{forest}
+  for tree={
+    font=\sffamily,
+    line width=0.6pt,
+    s sep=3mm,
+    l sep=5mm,
+    inner sep=1mm,
+    align=center,
+    where n children=0{font=\sffamily\bfseries, text=syntaxtreegreen}{},
+  }
+{{ TREE }}
+\end{forest}
+
+\end{document}
