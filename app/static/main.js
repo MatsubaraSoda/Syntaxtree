@@ -1,30 +1,44 @@
 /**
  * Syntaxtree 沙盒 UI - 纯 CSS 平分左右布局 + 灯箱（拖拽平移、滚轮缩放）
+ * 优化版：增强了错误处理、异步状态控制和剪贴板降级
  */
 
 const $ = (sel) => document.querySelector(sel);
 
-// ========== 灯箱 ==========
+// ========== 灯箱状态 ==========
 let lightboxPan = { x: 0, y: 0 };
 let lightboxZoom = 1;
 let lightboxStart = { x: 0, y: 0 };
 let lightboxDragging = false;
+let currentSvgBlobUrl = null;
+let lastSvgContent = null;
 
+// ========== 状态提示 ==========
+// 暂不显示，保留 #status 区域，等逻辑梳理后再启用
+function setStatus(text, type = '') {
+  // no-op
+}
+
+// ========== 灯箱操作 ==========
 function openLightbox() {
   if (!lastSvgContent) return;
   const lightbox = $('#lightbox');
   const wrapper = $('#lightbox .lightbox-svg-wrapper');
   const panZoom = $('#lightbox .lightbox-pan-zoom');
+  const closeBtn = $('#lightbox .lightbox-close');
+
+  if (!lightbox || !wrapper || !panZoom || !closeBtn) return;
 
   lightboxPan = { x: 0, y: 0 };
   lightboxZoom = 1;
   lightboxDragging = false;
 
-  // 直接用 SVG 源码注入内联 SVG，确保 <text> 在 DOM 中，支持选中复制
+  // 注入 SVG 源码
   wrapper.innerHTML = '';
   const bg = document.createElement('div');
   bg.className = 'lightbox-svg-bg';
   wrapper.appendChild(bg);
+  
   const wrap = document.createElement('div');
   wrap.className = 'lightbox-svg-content';
   wrap.innerHTML = lastSvgContent;
@@ -36,11 +50,11 @@ function openLightbox() {
 
   let maybePanning = false;
   let panStart = { x: 0, y: 0 };
-  const DRAG_THRESHOLD = 5;  // 像素，超过此距离才视为拖拽，否则可选中文本
+  const DRAG_THRESHOLD = 5;
 
   const onMouseDown = (e) => {
     if (e.target.closest('.lightbox-close')) return;
-    if (e.button !== 0) return;  // 左键拖拽平移
+    if (e.button !== 0) return;
     maybePanning = true;
     panStart = { x: e.clientX, y: e.clientY };
     lightboxStart = { x: e.clientX - lightboxPan.x, y: e.clientY - lightboxPan.y };
@@ -51,7 +65,7 @@ function openLightbox() {
     if (!lightboxDragging) {
       const dx = e.clientX - panStart.x;
       const dy = e.clientY - panStart.y;
-      if (dx * dx + dy * dy < DRAG_THRESHOLD * DRAG_THRESHOLD) return;  // 未超过阈值，可能是在选文本
+      if (dx * dx + dy * dy < DRAG_THRESHOLD * DRAG_THRESHOLD) return;
       lightboxDragging = true;
       panZoom.classList.add('dragging');
       document.body.style.userSelect = 'none';
@@ -63,23 +77,26 @@ function openLightbox() {
 
   const onMouseUp = () => {
     maybePanning = false;
-    lightboxDragging = false;
-    panZoom.classList.remove('dragging');
-    document.body.style.userSelect = '';
+    if (lightboxDragging) {
+      lightboxDragging = false;
+      panZoom.classList.remove('dragging');
+      document.body.style.userSelect = '';
+    }
   };
 
   const onWheel = (e) => {
     e.preventDefault();
-    const ZOOM_STEP = 0.25;  // 每次滚轮缩放步长
+    const ZOOM_STEP = 0.25;
     const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
     const zoomOld = lightboxZoom;
     lightboxZoom = Math.max(0.5, Math.min(5, lightboxZoom + delta));
     if (zoomOld === lightboxZoom) return;
-    // 以鼠标位置为缩放焦点：调整 pan 使鼠标下的点保持不动
+    
     const rect = panZoom.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const ratio = 1 - lightboxZoom / zoomOld;
+    
     lightboxPan.x += (e.clientX - centerX - lightboxPan.x) * ratio;
     lightboxPan.y += (e.clientY - centerY - lightboxPan.y) * ratio;
     applyLightboxTransform();
@@ -96,7 +113,7 @@ function openLightbox() {
     lightbox.hidden = true;
     document.body.style.overflow = '';
     lightbox.onclick = null;
-    $('#lightbox .lightbox-close').onclick = null;
+    closeBtn.onclick = null;
     cleanup();
   };
 
@@ -104,10 +121,8 @@ function openLightbox() {
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
   panZoom.addEventListener('wheel', onWheel, { passive: false });
+  closeBtn.onclick = closeLightbox;
 
-  $('#lightbox .lightbox-close').onclick = closeLightbox;
-
-  // 点击黑色幕布（图片周边）关闭灯箱
   lightbox.onclick = (e) => {
     if (!e.target.closest('.lightbox-svg-wrapper') && !e.target.closest('.lightbox-close')) {
       closeLightbox();
@@ -122,17 +137,6 @@ function applyLightboxTransform() {
   }
 }
 
-// ========== 状态提示 ==========
-function setStatus(text, type = '') {
-  const el = $('#status');
-  el.textContent = text;
-  el.className = 'status ' + type;
-}
-
-// 当前 SVG 的 blob URL 及源码，用于「在新标签页打开图片」和复制
-let currentSvgBlobUrl = null;
-let lastSvgContent = null;
-
 // ========== 新标签页打开 ==========
 function openSvgInNewTab() {
   if (!currentSvgBlobUrl) {
@@ -142,29 +146,79 @@ function openSvgInNewTab() {
   window.open(currentSvgBlobUrl, '_blank', 'noopener');
 }
 
-// ========== 复制 SVG ==========
-function copySvgToClipboard() {
-  if (!lastSvgContent) {
-    setStatus('请先生成 SVG', 'error');
-    return;
-  }
-  const svgStr = lastSvgContent;
-  navigator.clipboard.writeText(svgStr).then(() => {
-    setStatus('已复制到剪贴板', 'success');
-  }).catch(() => {
-    setStatus('复制失败', 'error');
+// ========== 禁用/启用按钮组 ==========
+function toggleButtons(disabled) {
+  ['#btn-parse', '#btn-generate', '#btn-parse-generate'].forEach(id => {
+    const btn = $(id);
+    if (btn) btn.disabled = disabled;
   });
 }
 
+// ========== 安全获取 JSON ==========
+// 拦截 Nginx 502 等返回的非 JSON 格式报错
+async function safeFetchJson(url, options) {
+  const res = await fetch(url, options);
+  try {
+    const data = await res.json();
+    return { res, data };
+  } catch (err) {
+    throw new Error(`服务器响应格式错误 (HTTP ${res.status})`);
+  }
+}
+
+// ========== 解析句子 ==========
+async function parseSentence(showTime = true) {
+  const sentenceInput = $('#sentence-input');
+  const codeInput = $('#code-input');
+  if (!sentenceInput || !codeInput) return null;
+
+  const sentence = sentenceInput.value.trim();
+  if (!sentence) {
+    setStatus('请先在句子输入框输入英文句子', 'error');
+    return null;
+  }
+
+  setStatus('解析中...');
+  toggleButtons(true);
+  const startTime = Date.now();
+
+  try {
+    const { res, data } = await safeFetchJson('/api/parse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sentence }),
+    });
+
+    if (res.ok && data.status === 'success') {
+      codeInput.value = data.code;
+      updateCodePlaceholder();
+      if (showTime) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        setStatus(`解析用时 ${elapsed} 秒`, 'success');
+      }
+      return data.code;
+    } else {
+      setStatus(data.detail || data.message || '解析失败', 'error');
+      return null;
+    }
+  } catch (e) {
+    setStatus('请求失败: ' + e.message, 'error');
+    return null;
+  } finally {
+    toggleButtons(false);
+  }
+}
+
 // ========== 生成 SVG ==========
-async function generateSvg() {
+async function generateSvg(internalCall = false) {
   const input = $('#code-input');
   const output = $('#svg-output');
-  const code = input.value.trim();
+  if (!input || !output) return false;
 
+  const code = input.value.trim();
   if (!code) {
     setStatus('请先输入括号表达式', 'error');
-    return;
+    return false;
   }
 
   setStatus('生成中...');
@@ -172,58 +226,166 @@ async function generateSvg() {
   const startTime = Date.now();
 
   try {
-    const res = await fetch('/api/generate', {
+    const { res, data } = await safeFetchJson('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code }),
     });
-    const data = await res.json();
 
     if (res.ok && data.status === 'success') {
       if (currentSvgBlobUrl) {
         URL.revokeObjectURL(currentSvgBlobUrl);
-        currentSvgBlobUrl = null;
       }
       const blob = new Blob([data.svg_content], { type: 'image/svg+xml' });
       currentSvgBlobUrl = URL.createObjectURL(blob);
       lastSvgContent = data.svg_content;
+      
+      output.innerHTML = '';
       const wrap = document.createElement('div');
       wrap.className = 'svg-preview';
       wrap.innerHTML = data.svg_content;
-      output.innerHTML = '';
       output.appendChild(wrap);
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-      setStatus(`用时${elapsed}秒`, 'success', { keep: true });
+
+      if (!internalCall) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+        setStatus(`生成用时 ${elapsed} 秒`, 'success');
+      }
+      return true;
     } else {
-      if (currentSvgBlobUrl) { URL.revokeObjectURL(currentSvgBlobUrl); currentSvgBlobUrl = null; }
-      lastSvgContent = null;
-      output.innerHTML = `<p class="placeholder status error">${data.detail || data.message || '生成失败'}</p>`;
-      setStatus('');  // 错误仅显示在 SVG 展示区
+      throw new Error(data.detail || data.message || '生成失败');
     }
   } catch (e) {
-    if (currentSvgBlobUrl) { URL.revokeObjectURL(currentSvgBlobUrl); currentSvgBlobUrl = null; }
+    if (currentSvgBlobUrl) { 
+        URL.revokeObjectURL(currentSvgBlobUrl); 
+        currentSvgBlobUrl = null; 
+    }
     lastSvgContent = null;
-    output.innerHTML = `<p class="placeholder status error">请求失败: ${e.message}</p>`;
-    setStatus('');  // 错误仅显示在 SVG 展示区
+    output.innerHTML = `<p class="placeholder status error">${e.message}</p>`;
+    // 将状态栏清空，让用户专注看预览区的报错
+    if (!internalCall) setStatus(''); 
+    return false;
   } finally {
     $('#btn-generate').disabled = false;
   }
 }
 
+// ========== 解析并生成 (修复了逻辑漏洞) ==========
+async function parseAndGenerate() {
+  const sentenceInput = $('#sentence-input');
+  if (!sentenceInput || !sentenceInput.value.trim()) {
+    setStatus('请先在句子输入框输入英文句子', 'error');
+    return;
+  }
+  
+  const startTime = Date.now();
+  // 第一步：解析
+  const code = await parseSentence(false); 
+  if (code) {
+    // 第二步：只有解析成功，才生成 SVG
+    const isGenSuccess = await generateSvg(true); 
+    if (isGenSuccess) {
+      // 第三步：只有两步都成功，才展示总用时
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+      setStatus(`总用时 ${elapsed} 秒`, 'success');
+    } else {
+      setStatus('解析成功，但生成 SVG 失败', 'error');
+    }
+  }
+}
+
+// ========== 剪贴板统一处理 (降级保护) ==========
+async function copyToClipboard(text, successMsg) {
+  if (!navigator.clipboard) {
+    // 降级：如果是非安全上下文 (HTTP 局域网)，该 API 不可用
+    setStatus('当前环境不支持一键复制，请手动选中复制', 'error');
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus(successMsg, 'success');
+  } catch (err) {
+    setStatus('复制失败，请重试', 'error');
+  }
+}
+
+function copyCodeToClipboard() {
+  const code = $('#code-input')?.value.trim();
+  if (!code) {
+    setStatus('请先解析句子或输入括号表达式', 'error');
+    return;
+  }
+  copyToClipboard(code, '代码已复制到剪贴板');
+}
+
+function copySvgToClipboard() {
+  if (!lastSvgContent) {
+    setStatus('请先生成 SVG', 'error');
+    return;
+  }
+  copyToClipboard(lastSvgContent, 'SVG 源码已复制到剪贴板');
+}
+
+// ========== 代码区 placeholder 显隐 ==========
+function updateCodePlaceholder() {
+  const input = $('#code-input');
+  const ph = $('#code-placeholder');
+  if (!input || !ph) return;
+  if (input.value.trim()) {
+    ph.classList.add('hidden');
+  } else {
+    ph.classList.remove('hidden');
+  }
+}
+
 // ========== 事件绑定 ==========
 function bindEvents() {
-  $('#btn-generate').addEventListener('click', generateSvg);
-  $('#btn-copy-svg').addEventListener('click', copySvgToClipboard);
-  $('#btn-open-new-tab').addEventListener('click', openSvgInNewTab);
+  updateCodePlaceholder();
+  
+  const sentenceInput = $('#sentence-input');
+  if (sentenceInput) {
+    sentenceInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        parseAndGenerate();
+      }
+    });
+  }
+
+  const codeInput = $('#code-input');
+  if (codeInput) {
+    // 极简防抖，避免拼音输入法过程中疯狂触发
+    let timeout;
+    codeInput.addEventListener('input', () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(updateCodePlaceholder, 100);
+    });
+    codeInput.addEventListener('paste', () => setTimeout(updateCodePlaceholder, 0));
+  }
+
+  // 绑定按钮点击事件
+  const bindClick = (id, handler) => {
+    const el = $(id);
+    if (el) el.addEventListener('click', handler);
+  };
+
+  bindClick('#btn-parse', parseSentence);
+  bindClick('#btn-generate', generateSvg);
+  bindClick('#btn-parse-generate', parseAndGenerate);
+  bindClick('#btn-copy-code', copyCodeToClipboard);
+  bindClick('#btn-copy-svg', copySvgToClipboard);
+  bindClick('#btn-open-new-tab', openSvgInNewTab);
 
   // 点击预览区打开灯箱（左键）
-  $('#svg-output').addEventListener('click', (e) => {
-    const wrap = e.target.closest('.svg-preview');
-    if (wrap && e.button === 0) {
-      e.preventDefault();
-      openLightbox();
-    }
-  });
+  const svgOutput = $('#svg-output');
+  if (svgOutput) {
+    svgOutput.addEventListener('click', (e) => {
+      const wrap = e.target.closest('.svg-preview');
+      if (wrap && e.button === 0) {
+        e.preventDefault();
+        openLightbox();
+      }
+    });
+  }
 }
 
 // ========== 入口 ==========

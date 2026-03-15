@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# 项目生成文件（LaTeX 临时目录）
+app/build/
+app/tmp/
+
+# 文档说明（不需要打入镜像）
+项目说明/
+
+# LaTeX 中间文件（若散落在根目录）
+*.aux
+*.log
+*.xdv
+*.synctex.gz
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 环境变量
+.env
+.env.local
+*.local

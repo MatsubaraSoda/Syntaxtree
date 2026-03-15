@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from app.generator import generate_svg
+from app.parser import parse_sentence
 
 app = FastAPI()
 
@@ -16,9 +17,32 @@ class GenerateRequest(BaseModel):
     code: str
 
 
+class ParseRequest(BaseModel):
+    sentence: str
+
+
 @app.get("/")
 def root():
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/document")
+def document():
+    return FileResponse(STATIC_DIR / "document.html")
+
+
+@app.post("/api/parse")
+def api_parse(req: ParseRequest):
+    sentence = req.sentence.strip()
+    if not sentence:
+        raise HTTPException(status_code=400, detail="请提供要解析的句子")
+    try:
+        code = parse_sentence(sentence)
+        return {"status": "success", "code": code}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/api/generate")

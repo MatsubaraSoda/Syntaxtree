@@ -67,8 +67,14 @@ def _escape_comma_for_forest(expr: str) -> str:
 
 
 def _sanitize_for_latex(expr: str) -> str:
-    """转义反斜杠，阻止 \\input、\\include 等 LaTeX 命令执行，防止读取系统文件。"""
-    return expr.replace("\\", "\\textbackslash ")
+    """转义 LaTeX 特殊字符，防止解析错误或注入。"""
+    s = expr.replace("\\", "\\textbackslash ")
+    s = s.replace("$", "\\$")   # PRP$ 等 POS 标签中的 $ 会触发数学模式
+    s = s.replace("&", "\\&")
+    s = s.replace("%", "\\%")
+    s = s.replace("#", "\\#")
+    s = s.replace("_", "\\_")
+    return s
 
 
 def _render_tex(bracket_expr: str) -> str:
@@ -77,6 +83,7 @@ def _render_tex(bracket_expr: str) -> str:
         raise ValueError(f"模板文件不存在: {TEMPLATE_TEX}")
 
     tree = _escape_comma_for_forest(bracket_expr)
+    tree = _sanitize_for_latex(tree)
     template = TEMPLATE_TEX.read_text(encoding="utf-8")
     return template.replace("{{ TREE }}", tree)
 

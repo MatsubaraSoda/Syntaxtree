@@ -105,3 +105,10 @@ docker exec syntaxtree bash -c "cd /app/app/templates && xelatex -no-pdf sample.
 ```
 docker exec syntaxtree bash -c "cd /app/app/templates && dvisvgm --font-format=woff2 --exact --bbox=min sample.xdv -o sample.svg"
 ```
+
+## 2026-03-13
+
+```
+docker build -t syntaxtree .
+docker run -it --name syntaxtree-run -p 8000:8000 -v ${PWD}/app:/app/app syntaxtree
+```

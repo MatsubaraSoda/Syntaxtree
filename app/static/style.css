@@ -1,24 +1,19 @@
 /* ========== 基础与变量（大自然绿色 #04AA6D，白色为主）========== */
 :root {
-  --nav-bg: #04AA6D;
-  --nav-text: #fff;
-  --nav-hover: #039660;
   --bar-padding-x: 1.5rem;  /* 导航、控制面板左右留白 */
   --panel-bg: #ffffff;
-  --panel-header-bg: #e8f7f0;
-  --panel-border: #d0d0d0;  /* 浅灰边框 */
-  --editor-bg: #ffffff;
+  --editor-bg: var(--panel-bg);
+  --btn-bg: var(--panel-bg);
   --editor-text: #2d3748;
   --editor-border: #e2e8f0;
-  --gutter-bg: #f1f1f1;
-  --gutter-hover: #e0e0e0;
+  --muted-bg: #f1f1f1;      /* 边框、面板标题等浅灰 */
   --btn-primary-bg: #04AA6D;
   --btn-primary-hover: #039660;
-  --btn-bg: #ffffff;
   --btn-hover: #e8f7f0;
   --placeholder: #94a3b8;
-  --success: #04AA6D;
+  --success: var(--btn-primary-bg);
   --error: #b91c1c;
+  --sentence-bg: #f8fafc;   /* 句子输入区背景 */
 }
 
 * {
@@ -43,7 +38,7 @@ body {
   align-items: center;
   padding: 0 var(--bar-padding-x);
   height: 48px;
-  background: #ffffff;
+  background: var(--panel-bg);
   flex-shrink: 0;
 }
 
@@ -56,8 +51,6 @@ body {
   color: var(--editor-text);
   text-decoration: none;
   font-size: 1.05rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
 }
 
 .nav-links a:hover {
@@ -75,9 +68,44 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  border-left: 4px solid #f1f1f1;
-  border-right: 4px solid #f1f1f1;
-  border-bottom: 4px solid #f1f1f1;
+}
+
+/* ========== 句子输入区 ========== */
+#sentence-container {
+  flex: 0 0 48px;   /* 固定 48px，不被 flex 压缩 */
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 var(--bar-padding-x);
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--editor-border);
+}
+
+.sentence-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--btn-primary-bg);
+  white-space: nowrap;
+}
+
+.sentence-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--editor-border);
+  border-radius: 6px;
+  background: var(--panel-bg);
+  outline: none;
+}
+
+.sentence-input:focus {
+  border-color: var(--btn-primary-bg);
+}
+
+.sentence-input::placeholder {
+  color: var(--placeholder);
 }
 
 #split-container {
@@ -87,6 +115,9 @@ body {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
+  border-left: 4px solid var(--muted-bg);
+  border-right: 4px solid var(--muted-bg);
+  border-bottom: 4px solid var(--muted-bg);
 }
 
 /* ========== 面板（各占 50%）========== */
@@ -99,7 +130,31 @@ body {
 }
 
 .panel-editor {
-  border-right: 6px solid #f1f1f1;
+  border-right: 6px solid var(--muted-bg);
+}
+
+.code-container {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.code-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--placeholder);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.code-placeholder.hidden {
+  display: none;
 }
 
 .panel-header {
@@ -107,15 +162,16 @@ body {
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--placeholder);
-  background: #f1f1f1;
+  background: var(--muted-bg);
   border: none;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  text-align: center;
   position: relative;
   z-index: 1;
 }
 
-.panel-editor textarea {
+.code-container textarea {
   flex: 1;
   width: 100%;
   min-width: 0;
@@ -131,7 +187,7 @@ body {
   outline: none;
 }
 
-.panel-editor textarea::placeholder {
+.code-container textarea::placeholder {
   color: var(--placeholder);
 }
 
@@ -139,7 +195,7 @@ body {
   flex: 1;
   min-width: 0;
   padding: 1rem;
-  background: #fff;
+  background: var(--panel-bg);
   overflow: auto;
   display: flex;
   align-items: center;
@@ -173,7 +229,7 @@ body {
   gap: 0.5rem;
   height: 48px;
   padding: 0 var(--bar-padding-x);
-  background: #ffffff;
+  background: var(--panel-bg);
   flex-shrink: 0;
 }
 
@@ -198,11 +254,29 @@ body {
 .btn-primary {
   background: var(--btn-primary-bg);
   border-color: var(--btn-primary-bg);
-  color: #fff;
+  color: var(--panel-bg);
 }
 
 .btn-primary:hover {
   background: var(--btn-primary-hover);
+}
+
+.btn-parse-generate {
+  background: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--panel-bg);
+}
+
+.btn-parse-generate:hover {
+  background: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
+}
+
+.control-sep {
+  width: 1px;
+  height: 1.2rem;
+  background: var(--editor-border);
+  margin: 0 0.25rem;
 }
 
 .status {
@@ -242,7 +316,7 @@ body {
   padding: 0;
   border: none;
   background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  color: var(--panel-bg);
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -286,7 +360,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
+  background: var(--panel-bg);
   z-index: -1;
 }
 
@@ -300,4 +374,76 @@ body {
   display: block;
   max-width: 90vw;
   max-height: 90vh;
+}
+
+/* ========== 文档页 (document.html) ========== */
+body.doc-page {
+  display: block;
+  overflow: auto;
+  height: auto;
+  min-height: 100vh;
+}
+
+.doc-page .doc-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem var(--bar-padding-x) 3rem;
+}
+
+.doc-page .doc-content h1 {
+  font-size: 1.5rem;
+  color: var(--btn-primary-bg);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.doc-page .doc-intro {
+  color: var(--editor-text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.doc-page .doc-section {
+  margin-bottom: 2.5rem;
+}
+
+.doc-page .doc-section h2 {
+  font-size: 1.15rem;
+  color: var(--btn-primary-bg);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.doc-page .doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--panel-bg);
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.doc-page .doc-table th,
+.doc-page .doc-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.doc-page .doc-table thead th {
+  background: var(--muted-bg);
+  font-weight: 600;
+  color: var(--editor-text);
+}
+
+.doc-page .doc-table tbody tr:hover {
+  background: var(--btn-hover);
+}
+
+.doc-page .doc-table td:first-child {
+  font-weight: 600;
+  color: var(--btn-primary-bg);
 }
