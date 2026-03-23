@@ -1,0 +1,430 @@
+{
+  "meta": {
+    "page_title": "PTB 规则 - Syntaxtree",
+    "h1": "PTB 句法树规则参考手册",
+    "intro": "本参考手册基于 Penn Treebank (PTB) 标签体系, 用于解析句法树中的各类节点标记. 标记划分为从句级别、短语级别、词汇级别；未归类条目见第四节。"
+  },
+  "sections": [
+    {
+      "id": "clause",
+      "heading": "一 从句级别 (Clause Level)",
+      "table": "four_col",
+      "columns": [
+        "简称",
+        "全称",
+        "中文",
+        "解释"
+      ],
+      "rows": [
+        {
+          "abbr": "S",
+          "full_en": "Simple declarative clause",
+          "zh": "简单陈述句",
+          "desc": "不由(可能为空的)从属连词或 wh-词引导, 且没有主谓倒装的简单陈述句."
+        },
+        {
+          "abbr": "SBAR",
+          "full_en": "Subordinate clause",
+          "zh": "从属从句",
+          "desc": "由(可能为空的)从属连词引导的从句."
+        },
+        {
+          "abbr": "SBARQ",
+          "full_en": "Direct question",
+          "zh": "直接疑问句",
+          "desc": "由 wh-词或 wh-短语引导的直接疑问句. 间接疑问句和关系从句应标注为 SBAR, 而不是 SBARQ."
+        },
+        {
+          "abbr": "SINV",
+          "full_en": "Inverted declarative sentence",
+          "zh": "倒装陈述句",
+          "desc": "主语位于时态动词或情态动词之后的倒装陈述句."
+        },
+        {
+          "abbr": "SQ",
+          "full_en": "Inverted yes/no question",
+          "zh": "倒装一般疑问句",
+          "desc": "倒装的一般疑问句, 或 SBARQ 中 wh-短语之后的 wh-疑问句的主句部分."
+        }
+      ]
+    },
+    {
+      "id": "phrase",
+      "heading": "二 短语级别 (Phrase Level)",
+      "table": "four_col",
+      "columns": [
+        "简称",
+        "全称",
+        "中文",
+        "解释"
+      ],
+      "rows": [
+        {
+          "abbr": "ADJP",
+          "full_en": "Adjective Phrase",
+          "zh": "形容词短语",
+          "desc": "形容词短语."
+        },
+        {
+          "abbr": "ADVP",
+          "full_en": "Adverb Phrase",
+          "zh": "副词短语",
+          "desc": "副词短语."
+        },
+        {
+          "abbr": "CONJP",
+          "full_en": "Conjunction Phrase",
+          "zh": "连词短语",
+          "desc": "连词短语."
+        },
+        {
+          "abbr": "FRAG",
+          "full_en": "Fragment",
+          "zh": "句子片段",
+          "desc": "句子片段."
+        },
+        {
+          "abbr": "INTJ",
+          "full_en": "Interjection",
+          "zh": "感叹语",
+          "desc": "感叹语. 大致对应于词性标签 UH."
+        },
+        {
+          "abbr": "LST",
+          "full_en": "List marker",
+          "zh": "列表标记",
+          "desc": "列表标记. 包含其周围的标点符号."
+        },
+        {
+          "abbr": "NAC",
+          "full_en": "Not a Constituent",
+          "zh": "非句法成分",
+          "desc": "非句法成分; 用于显示 NP 内某些名词前修饰语的作用域."
+        },
+        {
+          "abbr": "NP",
+          "full_en": "Noun Phrase",
+          "zh": "名词短语",
+          "desc": "名词短语."
+        },
+        {
+          "abbr": "NX",
+          "full_en": "Head of complex NP",
+          "zh": "复杂名词短语中心",
+          "desc": "用于某些复杂 NP 中标记 NP 的中心语. 大致对应 N-bar 级别, 但用法差异很大."
+        },
+        {
+          "abbr": "PP",
+          "full_en": "Prepositional Phrase",
+          "zh": "介词短语",
+          "desc": "介词短语."
+        },
+        {
+          "abbr": "PRN",
+          "full_en": "Parenthetical",
+          "zh": "插入语",
+          "desc": "插入语成分."
+        },
+        {
+          "abbr": "PRT",
+          "full_en": "Particle",
+          "zh": "小品词",
+          "desc": "小品词. 适用于应标记为 RP 的词的类别."
+        },
+        {
+          "abbr": "QP",
+          "full_en": "Quantifier Phrase",
+          "zh": "量词短语",
+          "desc": "量词短语(即复杂的度量/数量短语); 在 NP 内使用."
+        },
+        {
+          "abbr": "RRC",
+          "full_en": "Reduced Relative Clause",
+          "zh": "缩略关系从句",
+          "desc": "缩略关系从句."
+        },
+        {
+          "abbr": "UCP",
+          "full_en": "Unlike Coordinated Phrase",
+          "zh": "非对等并列短语",
+          "desc": "非对等并列短语."
+        },
+        {
+          "abbr": "VP",
+          "full_en": "Verb Phrase",
+          "zh": "动词短语",
+          "desc": "动词短语."
+        },
+        {
+          "abbr": "WHADJP",
+          "full_en": "Wh-adjective Phrase",
+          "zh": "wh-形容词短语",
+          "desc": "包含 wh-副词的形容词短语, 例如 how hot."
+        },
+        {
+          "abbr": "WHAVP",
+          "full_en": "Wh-adverb Phrase",
+          "zh": "wh-副词短语",
+          "desc": "引导带有 NP 缺口的从句. 可以为空(包含 0 补语)或词汇化的(包含 wh-副词, 如 how 或 why)."
+        },
+        {
+          "abbr": "WHNP",
+          "full_en": "Wh-noun Phrase",
+          "zh": "wh-名词短语",
+          "desc": "引导带有 NP 缺口的从句. 可以为空(包含 0 补语)或词汇化的(包含某些 wh-词, 如 who, which book, whose daughter, none of which, 或 how many leopards)."
+        },
+        {
+          "abbr": "WHPP",
+          "full_en": "Wh-prepositional Phrase",
+          "zh": "wh-介词短语",
+          "desc": "包含 wh-名词短语(如 of which 或 by whose authority)的介词短语, 它要么引导一个 PP 缺口, 要么被包含在 WHNP 中."
+        },
+        {
+          "abbr": "X",
+          "full_en": "Unknown / Unbracketable",
+          "zh": "未知/无法定界成分",
+          "desc": "未知, 不确定或无法定界的成分. X 常用于标注拼写错误以及 the...the- 结构."
+        }
+      ]
+    },
+    {
+      "id": "word",
+      "heading": "三 词汇级别 (Word Level)",
+      "table": "four_col",
+      "columns": [
+        "简称",
+        "全称",
+        "中文",
+        "解释"
+      ],
+      "rows": [
+        {
+          "abbr": "CC",
+          "full_en": "Coordinating conjunction",
+          "zh": "并列连词",
+          "desc": "并列连词."
+        },
+        {
+          "abbr": "CD",
+          "full_en": "Cardinal number",
+          "zh": "基数词",
+          "desc": "基数词."
+        },
+        {
+          "abbr": "DT",
+          "full_en": "Determiner",
+          "zh": "限定词",
+          "desc": "限定词."
+        },
+        {
+          "abbr": "EX",
+          "full_en": "Existential there",
+          "zh": "存在句引导词",
+          "desc": "存在句中的 there."
+        },
+        {
+          "abbr": "FW",
+          "full_en": "Foreign word",
+          "zh": "外来词",
+          "desc": "外来词."
+        },
+        {
+          "abbr": "IN",
+          "full_en": "Preposition or subordinating conjunction",
+          "zh": "介词/从属连词",
+          "desc": "介词或从属连词."
+        },
+        {
+          "abbr": "JJ",
+          "full_en": "Adjective",
+          "zh": "形容词",
+          "desc": "形容词."
+        },
+        {
+          "abbr": "JJR",
+          "full_en": "Adjective, comparative",
+          "zh": "形容词比较级",
+          "desc": "形容词比较级."
+        },
+        {
+          "abbr": "JJS",
+          "full_en": "Adjective, superlative",
+          "zh": "形容词最高级",
+          "desc": "形容词最高级."
+        },
+        {
+          "abbr": "LS",
+          "full_en": "List item marker",
+          "zh": "列表项标记",
+          "desc": "列表项标记."
+        },
+        {
+          "abbr": "MD",
+          "full_en": "Modal",
+          "zh": "情态动词",
+          "desc": "情态动词."
+        },
+        {
+          "abbr": "NN",
+          "full_en": "Noun, singular or mass",
+          "zh": "单数/不可数名词",
+          "desc": "名词, 单数或不可数."
+        },
+        {
+          "abbr": "NNS",
+          "full_en": "Noun, plural",
+          "zh": "复数名词",
+          "desc": "名词, 复数."
+        },
+        {
+          "abbr": "NNP",
+          "full_en": "Proper noun, singular",
+          "zh": "单数专有名词",
+          "desc": "专有名词, 单数."
+        },
+        {
+          "abbr": "NNPS",
+          "full_en": "Proper noun, plural",
+          "zh": "复数专有名词",
+          "desc": "专有名词, 复数."
+        },
+        {
+          "abbr": "PDT",
+          "full_en": "Predeterminer",
+          "zh": "前位限定词",
+          "desc": "前位限定词."
+        },
+        {
+          "abbr": "POS",
+          "full_en": "Possessive ending",
+          "zh": "所有格结尾",
+          "desc": "所有格结尾."
+        },
+        {
+          "abbr": "PRP",
+          "full_en": "Personal pronoun",
+          "zh": "人称代词",
+          "desc": "人称代词."
+        },
+        {
+          "abbr": "PRP$",
+          "full_en": "Possessive pronoun",
+          "zh": "物主代词",
+          "desc": "物主代词 (Prolog 版本为 PRP-S)."
+        },
+        {
+          "abbr": "RB",
+          "full_en": "Adverb",
+          "zh": "副词",
+          "desc": "副词."
+        },
+        {
+          "abbr": "RBR",
+          "full_en": "Adverb, comparative",
+          "zh": "副词比较级",
+          "desc": "副词比较级."
+        },
+        {
+          "abbr": "RBS",
+          "full_en": "Adverb, superlative",
+          "zh": "副词最高级",
+          "desc": "副词最高级."
+        },
+        {
+          "abbr": "RP",
+          "full_en": "Particle",
+          "zh": "小品词",
+          "desc": "小品词."
+        },
+        {
+          "abbr": "SYM",
+          "full_en": "Symbol",
+          "zh": "符号",
+          "desc": "符号."
+        },
+        {
+          "abbr": "TO",
+          "full_en": "to",
+          "zh": "to 标记",
+          "desc": "单词 to."
+        },
+        {
+          "abbr": "UH",
+          "full_en": "Interjection",
+          "zh": "感叹词",
+          "desc": "感叹词."
+        },
+        {
+          "abbr": "VB",
+          "full_en": "Verb, base form",
+          "zh": "动词原形",
+          "desc": "动词, 原形."
+        },
+        {
+          "abbr": "VBD",
+          "full_en": "Verb, past tense",
+          "zh": "动词过去式",
+          "desc": "动词, 过去式."
+        },
+        {
+          "abbr": "VBG",
+          "full_en": "Verb, gerund / present participle",
+          "zh": "动名词/现在分词",
+          "desc": "动词, 动名词或现在分词."
+        },
+        {
+          "abbr": "VBN",
+          "full_en": "Verb, past participle",
+          "zh": "动词过去分词",
+          "desc": "动词, 过去分词."
+        },
+        {
+          "abbr": "VBP",
+          "full_en": "Verb, non-3rd person singular present",
+          "zh": "非第三人称单数现在时",
+          "desc": "动词, 非第三人称单数现在时."
+        },
+        {
+          "abbr": "VBZ",
+          "full_en": "Verb, 3rd person singular present",
+          "zh": "第三人称单数现在时",
+          "desc": "动词, 第三人称单数现在时."
+        },
+        {
+          "abbr": "WDT",
+          "full_en": "Wh-determiner",
+          "zh": "wh-限定词",
+          "desc": "wh-限定词."
+        },
+        {
+          "abbr": "WP",
+          "full_en": "Wh-pronoun",
+          "zh": "wh-代词",
+          "desc": "wh-代词."
+        },
+        {
+          "abbr": "WP$",
+          "full_en": "Possessive wh-pronoun",
+          "zh": "wh-物主代词",
+          "desc": "wh-物主代词 (Prolog 版本为 WP-S)."
+        },
+        {
+          "abbr": "WRB",
+          "full_en": "Wh-adverb",
+          "zh": "wh-副词",
+          "desc": "wh-副词."
+        }
+      ]
+    },
+    {
+      "id": "pending",
+      "heading": "四 待处理",
+      "table": "two_col",
+      "columns": [
+        "简称",
+        "句子"
+      ],
+      "rows": []
+    }
+  ]
+}

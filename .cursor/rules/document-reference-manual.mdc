@@ -1,0 +1,23 @@
+---
+description: PTB 参考手册（document.json）编写原则与标签权威来源
+alwaysApply: true
+---
+
+# 参考手册（document.json）编写原则
+
+## 定位
+
+- **数据源**：[`app/static/data/document.json`](app/static/data/document.json)。用户访问 **`GET /document`** 时由服务端根据该 JSON **渲染** HTML（非手写静态 `document.html`）。
+- **作用**：帮助用户理解 **`app/pipeline/parser.py` 输出的括号句法树**中出现的结点标签（非终结符与终结符 POS 等）。解析的**主产物**仍是括号表达式；`ParseResult.labels` 仅为辅助元数据，用于第四节「待处理」与 API，见 **`syntaxtree-workflow`**。
+
+## 标签权威来源
+
+- **以 Stanza 成分解析器（`app/pipeline/parser.py` 所用 pipeline）实际输出的标签为准**。手册应解释用户**在解析结果里会见到**的符号；若某标签在运行中出现而手册未收录，视为**手册待补全**，而非解析错误。
+- Penn Treebank（PTB）标签说明可作为编写时的**参考与措辞来源**，但若与 **Stanza 在本项目中的实际输出**不一致，**以 Stanza 输出为准**。
+- 不将「教材或通用 PTB 列表的节选」当作唯一真理；允许存在教材未单独列出但 Stanza 会产出的标签（例如标点类 **`HYPH`** 等）。
+
+## 维护取向
+
+- **开发者编辑 `document.json`**，不维护手写整页 HTML。解析时自动将**全局尚未出现过的简称**追加到 **第四节「待处理」**（仅填简称与例句）；将条目**升格**到一至三节时，由开发者手动补全全称/中文/解释，并从 pending 删除该行，保持**简称全局唯一**。
+- 增补条目时优先对照 **解析器真实输出**，使手册**覆盖度**与产品行为一致。
+- 与项目其他文档的优先级关系见 **`documentation-precedence`**：若 `.docs/` 与规则或本原则冲突，以 **`.cursor/rules/`** 为准。

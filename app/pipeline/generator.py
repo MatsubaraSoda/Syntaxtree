@@ -12,9 +12,11 @@ import subprocess
 import uuid
 from pathlib import Path
 
+_APP_DIR = Path(__file__).resolve().parent.parent
+
 # LaTeX 编译与 PDF→SVG 的中间文件目录，每个请求使用独立子目录 build/{request_id}/
-BUILD_DIR = Path(__file__).resolve().parent / "build"
-TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
+BUILD_DIR = _APP_DIR / "build"
+TEMPLATES_DIR = _APP_DIR / "templates"
 TEMPLATE_TEX = TEMPLATES_DIR / "template.tex"
 
 # 输出文件名（不含扩展名）

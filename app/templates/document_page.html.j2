@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ meta.page_title }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="doc-page">
+  <header class="nav">
+    <nav class="nav-links">
+      <a href="/">Syntaxtree</a>
+      <a href="/document" class="active">Document</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <main class="doc-content">
+    <h1>{{ meta.h1 }}</h1>
+    <p class="doc-intro">{{ meta.intro }}</p>
+
+    {% for section in sections %}
+    <section class="doc-section">
+      <h2>{{ section.heading }}</h2>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            {% for col in section.columns %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% if section.table == "four_col" %}
+            {% for row in section.rows %}
+            <tr>
+              <td>{{ row.abbr }}</td>
+              <td>{{ row.full_en }}</td>
+              <td>{{ row.zh }}</td>
+              <td>{{ row.desc }}</td>
+            </tr>
+            {% endfor %}
+          {% elif section.table == "two_col" %}
+            {% for row in section.rows %}
+            <tr>
+              <td>{{ row.abbr }}</td>
+              <td>{{ row.sentence }}</td>
+            </tr>
+            {% endfor %}
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+    {% endfor %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,17 @@
+---
+description: Syntaxtree 句法树流水线：parser 与 generator 的职责与衔接
+alwaysApply: true
+---
+
+# 句法树流水线
+
+```
+句子 → parser → 括号句法树 → generator → SVG
+```
+
+## 职责划分
+
+- **parser**（`app/pipeline/parser.py`）：将原句转换为以 `[]` 表示的线性句法树结构（括号表达式）
+- **generator**（`app/pipeline/generator.py`）：将括号句法树结构转换为 SVG
+
+二者通过括号表达式衔接。所有解析输出必须为 generator 可用的括号格式，不产生表格、JSON 等非括号形式的中间结果。

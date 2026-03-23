@@ -1,0 +1,32 @@
+---
+description: Syntaxtree 默认使用容器环境执行 Python、LaTeX、Web 服务等；源码在宿主机工作区编辑
+alwaysApply: true
+---
+
+# 容器环境
+
+本项目依赖 Stanza、PyTorch、LaTeX (xelatex)、dvisvgm 等，均已在 Docker 镜像中配置。**运行与验证**应使用容器内的解释器与工具，而非在宿主机上假设已安装相同依赖。
+
+## 工作区与执行（与「主机改文件、容器里跑」一致）
+
+- **文件与源码**：在**宿主机工作区**编辑、保存与 Git 管理（包括 `.py`、静态资源、配置等）。Agent **直接读写工作区文件**属于正常流程，不要求在容器内编辑文件。
+- **运行与命令**：需要**执行** Python、或依赖 Stanza/LaTeX 的验证时，在**已运行的容器内**执行（见下），**不要**用宿主机上的 `python` / `py` 作为本项目的运行入口，以免环境与依赖不一致。
+
+## 执行方式
+
+- **Python**：通过 `docker exec syntaxtree-run python ...` 在容器内执行（工作区若已挂载进容器，容器内看到的是同一份代码）
+- **LaTeX / dvisvgm**：由 `app/pipeline/generator.py` 在运行时容器内调用
+- **Web 服务**：通过 `docker run` 启动容器运行 uvicorn（由开发者管理容器生命周期）
+
+## 镜像与容器名称
+
+- **镜像**：`syntaxtree:latest`
+- **容器**：`syntaxtree-run`
+
+## 职责划分
+
+Docker 镜像、容器的构建、创建、启动、停止等操作**由开发者负责**。Agent 只负责在已运行的容器内执行命令、使用容器环境，不执行 `docker build`、`docker run` 等管理操作。
+
+## 获取运行结果
+
+在 Ask 模式下，`docker exec` 等命令的执行结果（stdout）无法被捕获或展示。若需查看容器内命令的输出（如解析结果、版本号等），请切换至 Agent 模式。
