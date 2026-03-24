@@ -13,10 +13,12 @@ _nlp = None
 
 @dataclass(frozen=True)
 class ParseResult:
-    """括号表达式 code 为解析主产物；labels 为树结点 label 去重后字母升序。"""
+    """括号表达式 code 为解析主产物；labels 为全部结点 label 去重后字母升序。
+    pending_labels 仅含内部短语标签（非叶），且排除 ROOT，供 document 待处理节追加。"""
 
     code: str
     labels: list[str]
+    pending_labels: list[str]
 
 
 def _get_pipeline():
@@ -55,6 +57,25 @@ def tree_iter_labels(tree) -> list[str]:
     return sorted(seen)
 
 
+def tree_iter_phrase_labels_for_pending(tree) -> list[str]:
+    """仅内部结点（非终端词/整句等叶结点）的 label；排除 ROOT。用于写入 document.json pending。"""
+    seen: set[str] = set()
+
+    def walk(t) -> None:
+        if t.is_leaf():
+            return
+        lab = getattr(t, "label", None)
+        if lab is not None:
+            s = str(lab)
+            if s and s != "ROOT":
+                seen.add(s)
+        for ch in t.children:
+            walk(ch)
+
+    walk(tree)
+    return sorted(seen)
+
+
 def parse_sentence(sentence: str) -> ParseResult:
     """
     解析英文句子，返回括号表达式与标签列表。
@@ -63,7 +84,7 @@ def parse_sentence(sentence: str) -> ParseResult:
         sentence: 英文句子
 
     Returns:
-        ParseResult(code=..., labels=...)
+        ParseResult(code=..., labels=..., pending_labels=...)
 
     Raises:
         ValueError: 句子为空或解析失败时
@@ -81,4 +102,5 @@ def parse_sentence(sentence: str) -> ParseResult:
     constituency_tree = doc.sentences[0].constituency
     code = tree_to_forest(constituency_tree)
     labels = tree_iter_labels(constituency_tree)
-    return ParseResult(code=code, labels=labels)
+    pending_labels = tree_iter_phrase_labels_for_pending(constituency_tree)
+    return ParseResult(code=code, labels=labels, pending_labels=pending_labels)

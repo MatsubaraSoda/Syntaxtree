@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from starlette.requests import Request
 
 from app.document import append_pending_tags, document_json_path, load_document
@@ -24,7 +24,10 @@ class GenerateRequest(BaseModel):
 
 
 class ParseRequest(BaseModel):
-    sentence: str
+    sentence: str = Field(
+        ...,
+        description="待解析的句子；请使用英文，以便 Stanza 与项目文档约定一致。",
+    )
 
 
 @app.get("/")
@@ -48,7 +51,11 @@ def document(request: Request):
     )
 
 
-@app.post("/api/parse")
+@app.post(
+    "/api/parse",
+    summary="解析句子",
+    description="将句子解析为括号表达式。调用时请使用英文句子。",
+)
 def api_parse(req: ParseRequest):
     sentence = req.sentence.strip()
     if not sentence:
@@ -57,7 +64,7 @@ def api_parse(req: ParseRequest):
         result = parse_sentence(sentence)
         if DOCUMENT_JSON.is_file():
             try:
-                append_pending_tags(DOCUMENT_JSON, sentence, result.labels)
+                append_pending_tags(DOCUMENT_JSON, sentence, result.pending_labels)
             except OSError as e:
                 raise HTTPException(
                     status_code=500, detail=f"更新 document.json 失败: {e}"

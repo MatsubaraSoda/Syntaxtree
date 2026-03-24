@@ -154,6 +154,90 @@ function toggleButtons(disabled) {
   });
 }
 
+// ========== 括号表达式排版（仅空白/换行，语义不变）==========
+const BRACKET_INDENT = '  ';
+
+function skipWs(s, i) {
+  while (i < s.length && /\s/.test(s[i])) i += 1;
+  return i;
+}
+
+function readLabel(s, i) {
+  const start = i;
+  while (i < s.length && !/\s/.test(s[i]) && s[i] !== '[' && s[i] !== ']') i += 1;
+  if (i === start) return { error: true };
+  return { label: s.slice(start, i), i };
+}
+
+/** @returns {{ node: { label: string, children: object[] }, i: number } | { error: true, i: number }} */
+function parseBracketNode(s, i) {
+  i = skipWs(s, i);
+  if (i >= s.length || s[i] !== '[') return { error: true, i };
+  i += 1;
+  const lab = readLabel(s, i);
+  if (lab.error) return { error: true, i };
+  i = lab.i;
+  const label = lab.label;
+  const children = [];
+  while (true) {
+    i = skipWs(s, i);
+    if (i >= s.length) return { error: true, i };
+    if (s[i] === ']') {
+      i += 1;
+      return { node: { label, children }, i };
+    }
+    if (s[i] !== '[') return { error: true, i };
+    const ch = parseBracketNode(s, i);
+    if (ch.error) return ch;
+    children.push(ch.node);
+    i = ch.i;
+  }
+}
+
+function parseBracketTree(code) {
+  const s = code.trim();
+  if (!s) return null;
+  const r = parseBracketNode(s, 0);
+  if (r.error) return null;
+  const end = skipWs(s, r.i);
+  if (end !== s.length) return null;
+  return r.node;
+}
+
+function prettyBracketLines(node, depth, lines) {
+  const ind = BRACKET_INDENT.repeat(depth);
+  if (node.children.length === 0) {
+    lines.push(`${ind}[${node.label}]`);
+    return;
+  }
+  lines.push(`${ind}[${node.label}`);
+  for (const c of node.children) {
+    prettyBracketLines(c, depth + 1, lines);
+  }
+  lines.push(`${ind}]`);
+}
+
+/** 解析成功返回多行缩进串；无法解析则返回 null（调用方保留原文） */
+function formatBracketCode(code) {
+  const node = parseBracketTree(code);
+  if (!node) return null;
+  const lines = [];
+  prettyBracketLines(node, 0, lines);
+  return lines.join('\n');
+}
+
+/** 对代码框当前内容尝试排版（解析失败则保持原样） */
+function applyBracketFormat() {
+  const input = $('#code-input');
+  if (!input) return;
+  const v = input.value.trim();
+  if (!v) return;
+  const f = formatBracketCode(v);
+  if (!f) return;
+  input.value = f;
+  updateCodePlaceholder();
+}
+
 // ========== 安全获取 JSON ==========
 // 拦截 Nginx 502 等返回的非 JSON 格式报错
 async function safeFetchJson(url, options) {
@@ -371,6 +455,7 @@ function bindEvents() {
   bindClick('#btn-parse', parseSentence);
   bindClick('#btn-generate', generateSvg);
   bindClick('#btn-parse-generate', parseAndGenerate);
+  bindClick('#btn-format-code', applyBracketFormat);
   bindClick('#btn-copy-code', copyCodeToClipboard);
   bindClick('#btn-copy-svg', copySvgToClipboard);
   bindClick('#btn-open-new-tab', openSvgInNewTab);

@@ -13,7 +13,7 @@
   --placeholder: #94a3b8;
   --success: var(--btn-primary-bg);
   --error: #b91c1c;
-  --sentence-bg: #f8fafc;   /* 句子输入区背景 */
+  --footer-muted: #b8c0cc; /* 页脚次要文字 */
 }
 
 * {
@@ -62,6 +62,32 @@ body {
   font-weight: 600;
 }
 
+/* ========== 页脚 ========== */
+.site-footer {
+  flex-shrink: 0;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 var(--bar-padding-x);
+  background: var(--panel-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-footer-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--footer-muted);
+  letter-spacing: 0.02em;
+}
+
+.site-footer-mark {
+  margin-right: 0.25em;
+  font-size: 0.9em;
+  opacity: 0.95;
+}
+
 /* ========== 工作区 ========== */
 .workspace {
   flex: 1;
@@ -78,8 +104,6 @@ body {
   align-items: center;
   gap: 0.75rem;
   padding: 0 var(--bar-padding-x);
-  background: var(--panel-bg);
-  border-bottom: 1px solid var(--editor-border);
 }
 
 .sentence-label {
@@ -115,6 +139,7 @@ body {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
+  margin: 0.5rem 0 0;
   border-left: 4px solid var(--muted-bg);
   border-right: 4px solid var(--muted-bg);
   border-bottom: 4px solid var(--muted-bg);
@@ -185,6 +210,10 @@ body {
   border: none;
   resize: none;
   outline: none;
+  white-space: pre;
+  overflow-x: auto;
+  overflow-y: auto;
+  tab-size: 2;
 }
 
 .code-container textarea::placeholder {
@@ -225,16 +254,29 @@ body {
 /* ========== 控制面板 ========== */
 .control-panel {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.5rem;
   height: 48px;
   padding: 0 var(--bar-padding-x);
   background: var(--panel-bg);
   flex-shrink: 0;
+  min-width: max-content;
 }
 
 .control-panel .status {
   margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.control-panel .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.control-panel .control-sep {
+  flex-shrink: 0;
 }
 
 .btn {
@@ -251,6 +293,15 @@ body {
   background: var(--btn-hover);
 }
 
+.btn:focus-visible {
+  outline: 2px solid var(--btn-primary-bg);
+  outline-offset: 2px;
+}
+
+.btn-primary:focus-visible {
+  outline-color: var(--editor-text);
+}
+
 .btn-primary {
   background: var(--btn-primary-bg);
   border-color: var(--btn-primary-bg);
@@ -258,16 +309,6 @@ body {
 }
 
 .btn-primary:hover {
-  background: var(--btn-primary-hover);
-}
-
-.btn-parse-generate {
-  background: var(--btn-primary-bg);
-  border-color: var(--btn-primary-bg);
-  color: var(--panel-bg);
-}
-
-.btn-parse-generate:hover {
   background: var(--btn-primary-hover);
   border-color: var(--btn-primary-hover);
 }
@@ -329,6 +370,11 @@ body {
 
 .lightbox-close:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-close:focus-visible {
+  outline: 2px solid var(--panel-bg);
+  outline-offset: 2px;
 }
 
 .lightbox-pan-zoom {

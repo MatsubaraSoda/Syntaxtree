@@ -3,28 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Syntaxtree - 句法树生成器</title>
+  <title>SyntaxTree — 句法树生成器</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <header class="nav">
     <nav class="nav-links">
-      <a href="/" class="active">Syntaxtree</a>
+      <a href="/" class="active">SyntaxTree</a>
       <a href="/document">Document</a>
       <a href="#">About</a>
     </nav>
   </header>
 
   <main class="workspace">
-    <div id="sentence-container" class="sentence-bar">
+    <div id="sentence-container">
       <label for="sentence-input" class="sentence-label">句子输入：</label>
       <input type="text" id="sentence-input" class="sentence-input" placeholder="输入要分析的英语句子" />
     </div>
+
+    <div class="control-panel">
+      <button id="btn-parse" class="btn" type="button">解析句子</button>
+      <button id="btn-generate" class="btn" type="button">生成 SVG</button>
+      <button id="btn-parse-generate" class="btn btn-primary" type="button">解析并生成</button>
+      <span class="control-sep"></span>
+      <button id="btn-format-code" class="btn" type="button" title="将括号树排版为多行缩进">排版</button>
+      <span class="control-sep"></span>
+      <button id="btn-copy-code" class="btn" type="button" title="复制括号表达式到剪贴板">复制代码</button>
+      <button id="btn-copy-svg" class="btn" type="button" title="复制 SVG 源码到剪贴板">复制 SVG</button>
+      <button id="btn-open-new-tab" class="btn" type="button" title="在新标签页中打开 SVG（可选中文本）">新标签页中打开 SVG</button>
+      <span id="status" class="status"></span>
+    </div>
+
     <div id="split-container">
       <div id="panel-editor" class="panel panel-editor">
         <div class="panel-header">代码区</div>
         <div class="code-container">
-          <textarea id="code-input" spellcheck="false"></textarea>
+          <textarea id="code-input" spellcheck="false" wrap="off"></textarea>
           <p id="code-placeholder" class="placeholder code-placeholder">点击「解析句子」查看结果</p>
         </div>
       </div>
@@ -37,16 +51,11 @@
     </div>
   </main>
 
-  <div class="control-panel">
-    <button id="btn-parse" class="btn">解析句子</button>
-    <button id="btn-generate" class="btn">生成 SVG</button>
-    <button id="btn-parse-generate" class="btn btn-parse-generate">解析并生成</button>
-    <span class="control-sep"></span>
-    <button id="btn-copy-code" class="btn" title="复制括号表达式到剪贴板">复制代码</button>
-    <button id="btn-copy-svg" class="btn" title="复制 SVG 源码到剪贴板">复制 SVG</button>
-    <button id="btn-open-new-tab" class="btn" title="在新标签页中打开 SVG（可选中文本）">新标签页中打开 SVG</button>
-    <span id="status" class="status"></span>
-  </div>
+  <footer class="site-footer" aria-label="页脚">
+    <p class="site-footer-text">
+      <span class="site-footer-mark" aria-hidden="true">©</span> SyntaxTree
+    </p>
+  </footer>
 
   <!-- 灯箱：点击 SVG 打开，拖拽平移、滚轮缩放，仅通过 × 关闭 -->
   <div id="lightbox" class="lightbox" hidden>

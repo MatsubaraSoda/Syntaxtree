@@ -424,7 +424,36 @@
         "简称",
         "句子"
       ],
-      "rows": []
+      "rows": [
+        {
+          "abbr": ",",
+          "sentence": "Our present concern is with the basic phenomena of transmission (p. 101), reflection (p. 104), and refraction (p. 108)."
+        },
+        {
+          "abbr": "-LRB-",
+          "sentence": "Our present concern is with the basic phenomena of transmission (p. 101), reflection (p. 104), and refraction (p. 108)."
+        },
+        {
+          "abbr": "-RRB-",
+          "sentence": "Our present concern is with the basic phenomena of transmission (p. 101), reflection (p. 104), and refraction (p. 108)."
+        },
+        {
+          "abbr": ".",
+          "sentence": "Our present concern is with the basic phenomena of transmission (p. 101), reflection (p. 104), and refraction (p. 108)."
+        },
+        {
+          "abbr": ":",
+          "sentence": "Beyond that, many fascinating questions need to be addressed: How does light move through a material medium? What happens to it as it does? Why does light appear to travel at a speed other than c when photons can exist only at c?"
+        },
+        {
+          "abbr": "WHADVP",
+          "sentence": "How does light move through a material medium? What happens to it as it does?"
+        },
+        {
+          "abbr": "HYPH",
+          "sentence": "In dense media, a tremendous number of close-together atoms or molecules contribute an equally tremendous number of scattered electromagnetic wavelets."
+        }
+      ]
     }
   ]
 }

@@ -7,6 +7,7 @@
 """
 
 import os
+import re
 import shutil
 import subprocess
 import uuid
@@ -39,6 +40,8 @@ def generate_svg(bracket_expr: str) -> str:
     bracket_expr = bracket_expr.strip()
     if not bracket_expr:
         raise ValueError("括号表达式不能为空")
+    # 前端可插入换行缩进；forest / 逗号转义依赖空格分隔，故合并空白为单空格
+    bracket_expr = re.sub(r"\s+", " ", bracket_expr)
 
     request_id = str(uuid.uuid4())
     work_dir = BUILD_DIR / request_id

@@ -14,29 +14,29 @@ cd Syntaxtree
 
 ```bash
 # 构建镜像
-docker build -t syntaxtree-app:latest .
+docker build -t syntaxtree:latest .
 
 # 删除镜像
-docker rmi syntaxtree-app:latest
+docker rmi syntaxtree:latest
 ```
 
 ## 容器
 
 ```bash
 # 创建并运行（开发模式，挂载 app 目录）
-docker run -it --name syntaxtree -p 8000:8000 -v ${PWD}/app:/app/app syntaxtree-app:latest
+docker run -it --name syntaxtree-run -p 8000:8000 -v ${PWD}/app:/app/app syntaxtree:latest
 
 # 启动
-docker start syntaxtree
+docker start syntaxtree-run
 
 # 停止
-docker stop syntaxtree
+docker stop syntaxtree-run
 
 # 删除
-docker rm -f syntaxtree
+docker rm -f syntaxtree-run
 
 # 查看日志
-docker logs -f syntaxtree
+docker logs -f syntaxtree-run
 ```
 
 ## 访问
